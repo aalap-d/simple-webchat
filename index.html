@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Chat</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #121212; color: #fff; }
+        #c { height: 300px; overflow-y: scroll; border: 1px solid #444; padding: 10px; margin-bottom: 10px; background: #1e1e1e; }
+        input, button { padding: 8px; background: #333; color: #fff; border: 1px solid #555; }
+        .s { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h3 id="t"></h3>
+    <div id="c"></div>
+    <input type="text" id="m" placeholder="Type a message..." style="width: 80%;">
+    <button onclick="s()">Send</button>
+
+    <script>
+        let p = new URLSearchParams(window.location.search);
+        let n = p.get('n') || "Guest";
+        let r = p.get('r') || "g";
+        let h = { "ngrok-skip-browser-warning": "1" };
+
+        document.getElementById('t').innerText = "Room Code: " + r;
+
+        async function i() {
+            await fetch('/x?r=' + r, { headers: h });
+            await fetch('/m?r=' + r, { method: 'POST', headers: h, body: '<span class="s">' + n + ' joined the room</span>' });
+            f();
+        }
+
+        async function f() {
+            let w = await fetch('/m?r=' + r, { headers: h });
+            let d = await w.json();
+            let b = document.getElementById('c');
+            b.innerHTML = d.join('<br>');
+            b.scrollTop = b.scrollHeight;
+        }
+
+        async function s() {
+            let m = document.getElementById('m').value;
+            if (!m) return;
+            await fetch('/m?r=' + r, { method: 'POST', headers: h, body: '<b>' + n + ':</b> ' + m });
+            document.getElementById('m').value = '';
+            f();
+        }
+
+        document.getElementById('m').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') s();
+        });
+
+        window.addEventListener('beforeunload', function () {
+            fetch('/m?r=' + r, { method: 'POST', headers: h, keepalive: true, body: '<span class="s">' + n + ' left the room</span>' });
+        });
+
+        setInterval(f, 1000);
+        i();
+    </script>
+</body>
+</html>

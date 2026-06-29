@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #121212; color: #fff; margin: 0; }
+        .b { background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #444; text-align: center; }
+        input, button { padding: 10px; margin: 10px 0; width: 90%; background: #333; color: #fff; border: 1px solid #555; }
+        button { cursor: pointer; background: #555; }
+    </style>
+</head>
+<body>
+    <div class="b">
+        <h2>Join a Room</h2>
+        <input type="text" id="n" placeholder="Your Name">
+        <input type="text" id="r" placeholder="Room Code (e.g. 123)">
+        <button onclick="j()">Enter Room</button>
+    </div>
+    <script>
+        function j() {
+            let n = document.getElementById('n').value;
+            let r = document.getElementById('r').value;
+            if (n && r) window.location.href = '/chat?r=' + r + '&n=' + n;
+        }
+    </script>
+</body>
+</html>
